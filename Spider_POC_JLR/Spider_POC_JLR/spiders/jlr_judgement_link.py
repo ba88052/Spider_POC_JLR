@@ -22,8 +22,8 @@ today = today.strftime("%m%d")
 
 class JudgementLinkSpider(scrapy.Spider):
     name = "jlr_judgement_link"
-    bq_table_name = f'judgement_link_{today}'
-    def __init__(self, start_date=three_days_ago, end_date=two_days_ago_str, *args, **kwargs):
+    bq_table_name = f'judgement_link_multiprocessing_{today}'
+    def __init__(self, start_date="01/01/2022", end_date="31/12/2022", *args, **kwargs):
         super(JudgementLinkSpider, self).__init__(*args, **kwargs)
         self.start_date = start_date
         self.end_date = end_date
@@ -31,7 +31,7 @@ class JudgementLinkSpider(scrapy.Spider):
 #---------------開始Selenium----------------#
     def start_requests(self):
         self.SPIDER_POC_JLR_LINK_ITEM = SpiderPocJlrLinkItem()
-        # print(f"Date:{self.start_date} - {self.end_date}")
+        logging.info(f"Date:{self.start_date} - {self.end_date}")
         yield SeleniumRequest(
             url='https://congbobanan.toaan.gov.vn/0tat1cvn/ban-an-quyet-dinh',
             wait_until=EC.visibility_of_element_located((By.CSS_SELECTOR, "button.sp-prompt-btn.sp-disallow-btn")),
@@ -72,6 +72,7 @@ class JudgementLinkSpider(scrapy.Spider):
 #---------------進入網頁後的主控制----------------#
     def parse(self, response):
         all_links = []
+        all_title = []
         driver = response.meta['driver']
         wait = WebDriverWait(driver, 30)
         #設置最大重試次數
@@ -116,23 +117,29 @@ class JudgementLinkSpider(scrapy.Spider):
         else:
             #total_pages 總頁數
             total_pages = wait.until(EC.visibility_of_element_located((By.ID, "ctl00_Content_home_Public_ctl00_LbShowtotal"))).text
-            print("Total Pages:", total_pages)
-            for page in tqdm(range(1, int(total_pages)+1)):
+            logging.info("Total Pages:", total_pages)
+            for page in range(1, int(total_pages)+1):
+                driver.implicitly_wait(5)
                 #獲得當前頁面所有Link
                 one_page_links = driver.find_elements(By.CSS_SELECTOR, 'a.echo_id_pub')
                 one_page_links_li = [link.get_attribute('href') for link in one_page_links]
-                all_links += one_page_links_li
+                one_page_title_li =  driver.find_elements(By.CLASS_NAME, "list-group-item-heading")
+                one_page_title_li = [title.text for title in one_page_title_li]
+                for link, title in zip(one_page_links_li, one_page_title_li):
+                    self.SPIDER_POC_JLR_LINK_ITEM["START_DATE"] = self.start_date
+                    self.SPIDER_POC_JLR_LINK_ITEM["END_DATE"] = self.end_date
+                    self.SPIDER_POC_JLR_LINK_ITEM["JLR_TITLE"] = title
+                    self.SPIDER_POC_JLR_LINK_ITEM["JLR_LINK"] = link
+                    # logging.info(f"{self.SPIDER_POC_JLR_LINK_ITEM} try to insert.")
+                    yield self.SPIDER_POC_JLR_LINK_ITEM
+                    # logging.info(f"{self.SPIDER_POC_JLR_LINK_ITEM} insert success.")
                 next_page = driver.find_element(By.ID, "ctl00_Content_home_Public_ctl00_cmdnext")
                 try:
                     #切換到下一頁，如果不行，則視同最後一頁
                     next_page.click()
-                    WebDriverWait(driver, 10).until(EC.text_to_be_present_in_element((By.CSS_SELECTOR, 'select.page_option_pub option[selected]'), str(page)))
+                    WebDriverWait(driver, 60).until(EC.text_to_be_present_in_element((By.CSS_SELECTOR, 'select.page_option_pub option[selected]'), str(page)))
+                    time.sleep(30)
                 except:
                     continue
             print("Get Link Success!!")
             driver.quit()
-            for link in all_links:
-                self.SPIDER_POC_JLR_LINK_ITEM["START_DATE"] = self.start_date
-                self.SPIDER_POC_JLR_LINK_ITEM["END_DATE"] = self.end_date
-                self.SPIDER_POC_JLR_LINK_ITEM["JLR_LINK"] = link
-                yield self.SPIDER_POC_JLR_LINK_ITEM

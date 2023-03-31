@@ -47,11 +47,13 @@ class BigQueryPipeline:
                 schema = [
                     bigquery.SchemaField("START_DATE", "STRING", mode="REQUIRED"),
                     bigquery.SchemaField("END_DATE", "STRING", mode="NULLABLE"),
-                    bigquery.SchemaField("JLR_LINK", "STRING", mode="NULLABLE")
+                    bigquery.SchemaField("JLR_LINK", "STRING", mode="NULLABLE"),
+                    bigquery.SchemaField("JLR_TITLE", "STRING", mode="NULLABLE")
                 ]
                 table = bigquery.Table(self.table_ref, schema = schema)
                 self.client.create_table(table)
                 logging.info(f"Create table {self.table_ref}")
+                print(f"Create table {self.table_ref}")
             # 如果x以'tax_num_'为前缀，则执行以下代码
             except Exception as e:
                 time.sleep(5)

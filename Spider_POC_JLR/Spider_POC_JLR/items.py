@@ -9,6 +9,8 @@ class SpiderPocJlrLinkItem(scrapy.Item):
     START_DATE = scrapy.Field()
     END_DATE = scrapy.Field()
     JLR_LINK = scrapy.Field()
+    JLR_TITLE = scrapy.Field()
+
 
 
 class SpiderPocJlrPdfItem(scrapy.Item):

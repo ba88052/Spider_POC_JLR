@@ -1,4 +1,3 @@
-
 import io
 import pdfplumber
 import scrapy
@@ -28,7 +27,6 @@ class JudgementInfoSpider(scrapy.Spider):
         """
         query_job = client.query(query)
         all_links = [row[0] for row in query_job.result()]
-        print(len(all_links))
         for link in all_links:  
             # logging.info(f'url is {link}')
             yield scrapy.Request(link, callback= self.parse_pdf_link, errback=self.handle_error) 
