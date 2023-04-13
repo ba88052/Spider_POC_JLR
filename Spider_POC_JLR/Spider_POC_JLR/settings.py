@@ -32,7 +32,7 @@ FAKEUSERAGENT_FALLBACK = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/
 SELENIUM_DRIVER_NAME = 'chrome'  #瀏覽器名稱
 SELENIUM_DRIVER_EXECUTABLE_PATH = ChromeDriverManager().install()
 SELENIUM_DRIVER_ARGUMENTS = [
-    '--blink-settings=imagesEnabled=false'
+    '--window-size=1920,1080',
     '--disable-gpu',
     '--disable-notifications',
     '--no-sandbox',

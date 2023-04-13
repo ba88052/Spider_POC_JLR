@@ -6,6 +6,7 @@
 import scrapy
 
 class SpiderPocJlrLinkItem(scrapy.Item):
+    PAGE = scrapy.Field()
     START_DATE = scrapy.Field()
     END_DATE = scrapy.Field()
     JLR_LINK = scrapy.Field()

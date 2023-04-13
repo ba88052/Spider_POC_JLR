@@ -9,6 +9,7 @@ from itemadapter import ItemAdapter
 from google.cloud import bigquery
 import time
 import logging
+import random
 
 
 class BigQueryPipeline:
@@ -46,6 +47,7 @@ class BigQueryPipeline:
             try:
                 schema = [
                     bigquery.SchemaField("START_DATE", "STRING", mode="REQUIRED"),
+                    bigquery.SchemaField("PAGE", "STRING", mode="REQUIRED"),
                     bigquery.SchemaField("END_DATE", "STRING", mode="NULLABLE"),
                     bigquery.SchemaField("JLR_LINK", "STRING", mode="NULLABLE"),
                     bigquery.SchemaField("JLR_TITLE", "STRING", mode="NULLABLE")
@@ -56,7 +58,7 @@ class BigQueryPipeline:
                 print(f"Create table {self.table_ref}")
             # 如果x以'tax_num_'为前缀，则执行以下代码
             except Exception as e:
-                time.sleep(5)
+                time.sleep(random.randint(60, 180))
                 logging.info(f"Table {self.table_ref} already exist")
 
         elif spider.bq_table_name.startswith('judgement_info_'):
@@ -77,7 +79,7 @@ class BigQueryPipeline:
                 self.client.create_table(table)
                 logging.info(f"Create table {self.table_ref}")
             except Exception as e:
-                time.sleep(5)
+                time.sleep(random.randint(60, 180))
                 logging.info(f"Table {self.table_ref} already exist")
                 
 
