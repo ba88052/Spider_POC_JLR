@@ -56,6 +56,7 @@ class BigQueryPipeline:
                 self.client.create_table(table)
                 logging.info(f"Create table {self.table_ref}")
                 print(f"Create table {self.table_ref}")
+                time.sleep(random.randint(40, 50))
             # 如果x以'tax_num_'为前缀，则执行以下代码
             except Exception as e:
                 time.sleep(random.randint(60, 180))

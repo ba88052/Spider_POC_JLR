@@ -25,8 +25,8 @@ today = today.strftime("%m%d")
 
 class JudgementLinkSpider(scrapy.Spider):
     name = "jlr_judgement_link"
-    bq_table_name = f'judgement_link_2021-2022_{today}'
-    def __init__(self, start_date="01/01/2022", end_date="31/12/2022", *args, **kwargs):
+    bq_table_name = f'judgement_link_2022_4_{today}'
+    def __init__(self, start_date="01/04/2022", end_date="30/04/2022", *args, **kwargs):
         super(JudgementLinkSpider, self).__init__(*args, **kwargs)
         self.start_date = start_date
         self.end_date = end_date
@@ -84,7 +84,7 @@ class JudgementLinkSpider(scrapy.Spider):
         if retry_count == max_retries:
             logging.error(f"Error occurred: Retry Enough Times")
             self.driver.quit()
-            sys.exit()
+            raise scrapy.exceptions.CloseSpider(f"Error occurred: Retry Enough Times")
         else:
             #total_pages 總頁數
             total_pages = wait.until(EC.visibility_of_element_located((By.ID, "ctl00_Content_home_Public_ctl00_LbShowtotal"))).text
@@ -111,12 +111,12 @@ class JudgementLinkSpider(scrapy.Spider):
                     break
                 try:
                     next_page.click()
-                    print("click next page")
-                    wait_time = random.uniform(30, 40)
+                    # print("click next page")
+                    wait_time = random.uniform(10, 13)
                     time.sleep(wait_time)
                     while self.get_current_page() == current_page:
                         WebDriverWait(self.driver, 60).until(EC.text_to_be_present_in_element((By.CSS_SELECTOR, 'select.page_option_pub option[selected]'), str(page)))
-                        time.sleep(60)
+                        time.sleep(10)
                 except:
                     continue
 
@@ -151,12 +151,13 @@ class JudgementLinkSpider(scrapy.Spider):
         submit_search = self.driver.find_element(By.ID, "ctl00_Content_home_Public_ctl00_cmd_search_banner")
         submit_search.click()
 
-
+#---------------對整個頁面截圖---------------#
     def get_whole_pic(self):
         screenshot = self.driver.get_screenshot_as_png()
         screenshot = Image.open(BytesIO(screenshot))
         screenshot.save("whole_picture.png")
 
+#---------------獲得當前頁碼---------------#
     def get_current_page(self):
         selected_option = self.driver.find_elements(By.XPATH, "//option[@selected='selected']")
         current_page = selected_option[8].text
