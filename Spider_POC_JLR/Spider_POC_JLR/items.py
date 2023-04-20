@@ -17,9 +17,11 @@ class SpiderPocJlrLinkItem(scrapy.Item):
 class SpiderPocJlrPdfItem(scrapy.Item):
     DECISION_NAME = scrapy.Field()
     LEGAL_RELATIONSHIP = scrapy.Field()
+    JLR_LINK = scrapy.Field()
     JUDGMENT_LEVEL = scrapy.Field()
     TYPE_OF_CASE = scrapy.Field()
     TRIAL_COURT = scrapy.Field()
+    UPDATE_DATE = scrapy.Field()
     APPLICATION_OF_PRECEDENT = scrapy.Field()
     CORRECTIONS = scrapy.Field()
     INFORMATION_ABOUT_THE_CASE = scrapy.Field()

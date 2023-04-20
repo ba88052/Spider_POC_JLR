@@ -25,8 +25,8 @@ today = today.strftime("%m%d")
 
 class JudgementLinkSpider(scrapy.Spider):
     name = "jlr_judgement_link"
-    bq_table_name = f'judgement_link_2022_4_{today}'
-    def __init__(self, start_date="01/04/2022", end_date="30/04/2022", *args, **kwargs):
+    bq_table_name = f'jlr_link_2022_6_{today}'
+    def __init__(self, start_date="01/06/2022", end_date="30/06/2022", *args, **kwargs):
         super(JudgementLinkSpider, self).__init__(*args, **kwargs)
         self.start_date = start_date
         self.end_date = end_date

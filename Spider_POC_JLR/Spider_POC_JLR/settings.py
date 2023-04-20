@@ -46,14 +46,12 @@ LOG_FILE = "spider_POC_JLR_log.ini"
 LOG_LEVEL = "INFO"  #特別注意這邊一定要大寫
 
 #BQ設定
-GCP_PROJECT_ID = 'spider-poc'
-BQ_DATASET_ID = 'spider_poc_jlr'
-os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "spider-poc-gcp-key.json"
+GCP_PROJECT_ID = 'cdcda-lab-377808'
+BQ_DATASET_ID = 'SAM_LAB'
 # Enable the BigQueryPipeline
 ITEM_PIPELINES = {'Spider_POC_JLR.pipelines.BigQueryPipeline': 1}
 
-# Crawl responsibly by identifying yourself (and your website) on the user-agent
-#USER_AGENT = "Spider_POC_JLR (+http://www.yourdomain.com)"
+
 
 # Obey robots.txt rules
 ROBOTSTXT_OBEY = True
@@ -68,6 +66,9 @@ DOWNLOAD_DELAY = 1
 # The download delay setting will honor only one of:
 #CONCURRENT_REQUESTS_PER_DOMAIN = 16
 #CONCURRENT_REQUESTS_PER_IP = 16
+
+# Crawl responsibly by identifying yourself (and your website) on the user-agent
+#USER_AGENT = "Spider_POC_JLR (+http://www.yourdomain.com)"
 
 # Disable cookies (enabled by default)
 #COOKIES_ENABLED = False

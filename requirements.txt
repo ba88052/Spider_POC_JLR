@@ -39,6 +39,7 @@ parsel==1.7.0
 pdfminer.six==20221105
 pdfplumber==0.8.0
 Pillow==9.4.0
+wheel==0.40.0
 Ponytile==0.1.1
 Protego==0.2.1
 proto-plus==1.22.2

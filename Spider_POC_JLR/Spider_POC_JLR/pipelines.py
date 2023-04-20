@@ -43,7 +43,7 @@ class BigQueryPipeline:
         # Create table if not exists
         self.table_ref = dataset_ref.table(spider.bq_table_name)
 
-        if spider.bq_table_name.startswith('judgement_link_'):
+        if spider.bq_table_name.startswith('jlr_link_'):
             try:
                 schema = [
                     bigquery.SchemaField("START_DATE", "STRING", mode="REQUIRED"),
@@ -59,13 +59,16 @@ class BigQueryPipeline:
                 time.sleep(random.randint(40, 50))
             # 如果x以'tax_num_'为前缀，则执行以下代码
             except Exception as e:
+                print(f"Table {self.table_ref} already exist")
                 time.sleep(random.randint(60, 180))
                 logging.info(f"Table {self.table_ref} already exist")
 
-        elif spider.bq_table_name.startswith('judgement_info_'):
+        elif spider.bq_table_name.startswith('jlr_info_'):
             try:
                 schema = [
                     bigquery.SchemaField("DECISION_NAME", "STRING", mode="NULLABLE"),
+                    bigquery.SchemaField("UPDATE_DATE", "STRING", mode="NULLABLE"),
+                    bigquery.SchemaField("JLR_LINK", "STRING", mode="NULLABLE"),
                     bigquery.SchemaField("LEGAL_RELATIONSHIP", "STRING", mode="NULLABLE"),
                     bigquery.SchemaField("JUDGMENT_LEVEL", "STRING", mode="NULLABLE"),
                     bigquery.SchemaField("TYPE_OF_CASE", "STRING", mode="NULLABLE"),
@@ -79,7 +82,9 @@ class BigQueryPipeline:
                 table = bigquery.Table(self.table_ref, schema = schema)
                 self.client.create_table(table)
                 logging.info(f"Create table {self.table_ref}")
+                print(f"Create table {self.table_ref}")
             except Exception as e:
+                print(f"Table {self.table_ref} already exist")
                 time.sleep(random.randint(60, 180))
                 logging.info(f"Table {self.table_ref} already exist")
                 
