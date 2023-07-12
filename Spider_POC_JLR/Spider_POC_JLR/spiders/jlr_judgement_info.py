@@ -13,24 +13,30 @@ today = datetime.today().date()
 today = today.strftime("%m%d")
 
 class JudgementInfoSpider(scrapy.Spider):
-    bq_table_name = f'jlr_info_test1_{today}'
+    bq_table_name = f'jlr_info_max'
     name = "jlr_judgement_info"
+    
+    def __init__(self,  offset, *args, **kwargs):
+        super(JudgementInfoSpider, self).__init__(*args, **kwargs)
+        self.offset = offset
 
 #---------------開始Request---------------# 
     def start_requests(self):
+
         client = bigquery.Client(project="cdcda-lab-377808")
-        query = """
+        query =f"""
                 SELECT JLR_LINK
                 FROM (
                     SELECT DISTINCT JLR_LINK, START_DATE, PAGE
-                    FROM `cdcda-lab-377808.SAM_LAB.jlr_link_2022_0419`
+                    FROM `cdcda-lab-377808.SAM_LAB.jlr_link_for_spider_0721`
                 )
                 ORDER BY START_DATE ASC, PAGE ASC
-                LIMIT 1000
-        """
+                LIMIT 10000 OFFSET {self.offset}
+            """
         query_job = client.query(query)
         all_jlr_links = [row[0] for row in query_job.result()]
         for jlr_link in all_jlr_links:  
+            logging.error(jlr_link)
             # logging.info(f'url is {link}')
             yield scrapy.Request(jlr_link, callback= self.parse_page_data, errback=self.handle_error, cb_kwargs={"jlr_link":jlr_link}) 
 

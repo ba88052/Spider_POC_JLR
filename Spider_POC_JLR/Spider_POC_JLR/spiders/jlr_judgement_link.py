@@ -4,6 +4,7 @@ import scrapy
 import logging
 import random
 from tqdm import tqdm
+
 from Spider_POC_JLR.items import SpiderPocJlrLinkItem
 from datetime import datetime, timedelta
 from scrapy_selenium import SeleniumRequest
@@ -25,8 +26,8 @@ today = today.strftime("%m%d")
 
 class JudgementLinkSpider(scrapy.Spider):
     name = "jlr_judgement_link"
-    bq_table_name = f'jlr_link_2022_6_{today}'
-    def __init__(self, start_date="01/06/2022", end_date="30/06/2022", *args, **kwargs):
+    bq_table_name = f'jlr_link_2019_08_{today}'
+    def __init__(self, start_date="11/01/2018", end_date="20/01/2018", *args, **kwargs):
         super(JudgementLinkSpider, self).__init__(*args, **kwargs)
         self.start_date = start_date
         self.end_date = end_date
